@@ -28,8 +28,8 @@ class ArangoDbAdapter {
     }
 
     connect() {
-		return conn.then(() => {
-			this.db = new Database(this.uri, this.opts);
+		return new Database(this.config).then( db => {
+			this.db = db;
 
 			this.db.on("disconnected", function arangoDisconnected() {
 				/* istanbul ignore next */
