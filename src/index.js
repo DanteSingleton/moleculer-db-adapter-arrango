@@ -212,16 +212,16 @@ class ArangoDbAdapter {
                     for(let i = 0; i < keys.length; i++) {
 						// Added Support for $or
 						if(keys[i].toLocaleLowerCase() == "$or") {
-							keys = Object.keys(values);
-							values = Object.values(values);
-							let tmp;
-							for(let j = 0; j < values.length; j++) {
-								tmp += `"${values[i]}" ||`;
-							}
-							filters.push(`FILTER x.${keys[0]} == ${tmp}`);
-							
-							}
-                        filters.push(`FILTER x.${keys[i]} == "${values[i]}"`);
+							console.log("Or was found")
+							let data = values[0];
+							let tmp = [];
+							for(let j = 0; j < data.length; j++) {
+								tmp.push(` x.${Object.keys(data[i])[0]} == "${Object.values(data[i])[0]}"`);
+							}					
+							filters.push(`FILTER ${tmp.join(' || ')}`);
+						} else  {
+						filters.push(`FILTER x.${keys[i]} == "${values[i]}"`);
+						}
                     }
                     filters = filters.join('\n');
                     console.log(filters);
