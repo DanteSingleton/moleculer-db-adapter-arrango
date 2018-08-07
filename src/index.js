@@ -210,6 +210,17 @@ class ArangoDbAdapter {
                     let values = Object.values(params.query);
 
                     for(let i = 0; i < keys.length; i++) {
+						// Added Support for $or
+						if(keys[i].toLocaleLowerCase() == "$or") {
+							keys = Object.keys(values);
+							values = Object.values(values);
+							let tmp;
+							for(let j = 0; j < values.length; j++) {
+								tmp += `"${values[i]}" ||`;
+							}
+							filters.push(`FILTER x.${keys[0]} == ${tmp}`);
+							
+							}
                         filters.push(`FILTER x.${keys[i]} == "${values[i]}"`);
                     }
                     filters = filters.join('\n');
